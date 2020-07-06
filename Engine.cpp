@@ -3,35 +3,53 @@
 #include <iostream>
 #include "point.h"
 
-float Angle_Between_Vect_XY(RealPoint one, RealPoint two)
+float const GTR = 0.0174533;    //Grad to Rad
+float const RTG = 1/GTR;
+float speed =4;
+
+
+float Angle_to_X(float &omega, float x, float y)
 {
-    ///Сюда код для нахождения угла между проекциями точки и камеры на Oxy
+
+	float cum_x = cos(GTR*omega);
+	float cum_y = sin(GTR*omega);
+
+	float ch = cum_x*x+cum_y*y;
+
+	float zn = sqrt(pow(cum_x, 2)+pow(cum_y, 2))*
+				sqrt(pow(x, 2)+pow(y, 2));
+	float output = sqrt(pow(x, 2)+pow(y, 2))*sin(acos(ch/zn));
+
+	if(omega>(360+(atan(y/x)/GTR))||(omega<-360+(atan(y/x)/GTR)))
+        omega=(atan(y/x)/GTR);
+    if((omega>180+(atan(y/x)/GTR)&&omega<360+(atan(y/x)/GTR))
+       ||(omega<(atan(y/x)/GTR)&&omega>-180+(atan(y/x)/GTR)))
+        output*=-1;
+	return output;
 }
 
-float Angle_Between_Vect_Z(RealPoint one, RealPoint two)
-{
-    ///Сюда то же самое, только между проекциями на плоскость, образованную Z и н.в.
-    ///проекции радиус вектора на Оху
-}
+float sign = 1;
 
-float Camera_Angle_To_Render_X(float omega, float c_x,
-                                RealPoint POINT, RealPoint CAMERA)
+float Angle_to_Y(float &gamma, float &omega, float x, float y, float z, float Axy_90)
 {
-    float output = pow(POINT.x, 2)+pow(POINT.y, 2);
-    output = sqrt(output);
-    output = output*sin(Angle_Between_Vect_XY(POINT, CAMERA));
 
-    //std::cout<<(c_x+output)<<std::endl;
-    return c_x+output;
-}
-float Camera_Angle_To_Render_Y(float gamma, float c_y,
-                               RealPoint POINT, RealPoint CAMERA)
-{
-    float output = pow(POINT.x, 2)+pow(POINT.y, 2)+pow(POINT.x, 2);
-    output = sqrt(output);
-    output = output*sin(Angle_Between_Vect_Z(POINT, CAMERA));
-    //std::cout<<(c_x+output)<<std::endl;
-    return c_y+output;
+    float cum_xy = cos(GTR*gamma);
+	float cum_z = sin(GTR*gamma);
+
+    float ch = cum_xy*z+cum_z*Axy_90;
+
+	float zn = sqrt(pow(cum_xy, 2)+pow(cum_z, 2))*
+				sqrt(pow(z, 2)+pow(Axy_90, 2));
+
+    float output = sqrt(pow(z,2)+pow(Axy_90,2))*sin(acos(ch/zn))*sign;
+
+    if(gamma>(360+(atan(Axy_90/z)*RTG))||(gamma<-360+(atan(Axy_90/z)*RTG)))
+        gamma=(atan(Axy_90/z)*RTG);
+    if((gamma>180+(atan(Axy_90/z)*RTG)&&gamma<360+(atan(Axy_90/z)*RTG))
+       ||(gamma<(atan(Axy_90/z)*RTG)&&gamma>-180+(atan(Axy_90/z)*RTG)))
+        output*=-1;
+
+    return output;
 }
 
 void Center_Update(int& center_x, int& center_y, sf::Vector2u Eng_size)
@@ -40,24 +58,22 @@ void Center_Update(int& center_x, int& center_y, sf::Vector2u Eng_size)
     center_x = Eng_size.x/2;
 }
 
-int main()//int Engine_START(point[] PointArray) -- в будущем тупо функция,
-{           //Сейчас main() для тестов
-    float const GTR = 0.0174533;    //Grad to Rad
-
+int main()
+{
+    float x_render; float y_render;
+    float Axy_90;
+    float scale = 10;
+    RealPoint POINT {10, -10, 10};
     int center_x, center_y; //Rendering Center
-    float omega, gamma, r;     //Keyboard Input in grad
-    float x_render, y_render;
-
-    RealPoint POINT {1, 0, 0};
-    RealPoint Camera {0,0,0};
+    float omega, gamma;     //Keyboard Input in grad
 
     omega = 0; float& omega_ref = omega;
-    gamma = 0;  float& gamma_ref = gamma;
-    r = 10;//? вообще хз какой брать
+    gamma = 1;  float& gamma_ref = gamma;
     center_x = 300; int &center_x_ref = center_x;
     center_y = 200; int &center_y_ref = center_y;
 
-    x_render = center_x; y_render = center_y;
+    sf::RenderWindow Engine(sf::VideoMode(600, 400), "Window");
+    sf::Vector2u Eng_size = Engine.getSize();
 
     sf::CircleShape center(5.f);
     center.setFillColor(sf::Color::White);
@@ -66,11 +82,16 @@ int main()//int Engine_START(point[] PointArray) -- в будущем тупо функция,
     center.setPosition(center_x, center_y);
 
     sf::CircleShape point(5.f);
-    point.setFillColor(sf::Color(245,230,255,255)); //Розовенький uwu
+    point.setFillColor(sf::Color(245,230,255,255));
     point.setOutlineThickness(2.f);
     point.setOutlineColor(sf::Color::Black);
 
-    sf::RenderWindow Engine(sf::VideoMode(600, 400), "Window");
+    Axy_90 = Angle_to_X(omega, POINT.x*scale, POINT.y*scale);
+    y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,POINT.x*scale,
+                                        POINT.y*scale, POINT.z*scale, Axy_90);
+    x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale, POINT.y*scale);
+    point.setPosition(x_render, y_render);
+
     Engine.setFramerateLimit(60);
 
     while (Engine.isOpen())
@@ -81,80 +102,89 @@ int main()//int Engine_START(point[] PointArray) -- в будущем тупо функция,
         {
             switch (event.type)
             {
-                //Здесь прописывать события в окне, в том числе реакцию на мышь и
-                //клавиатуру
                 case sf::Event::Closed:
                     Engine.close();
                     break;
                 case sf::Event::Resized:
                     {
                     Center_Update(center_x_ref, center_y_ref, Engine.getSize());
+                    center.setPosition(center_x, center_y);
                     break;
                     }
                 case sf::Event::KeyPressed:
                     switch(event.key.code)
                     {
+                        case sf::Keyboard::Q:
+                            scale++;
+                            Axy_90 = Angle_to_X(omega, POINT.x*scale, POINT.y*scale);
+                            y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,POINT.x*scale,
+                                        POINT.y*scale, POINT.z*scale, Axy_90);
+                            x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale, POINT.y*scale);
+                            point.setPosition(x_render, y_render);
+                            break;
+                        case sf::Keyboard::W:
+                            if(scale>2)
+                            {
+                                scale--;
+                                Axy_90 = Angle_to_X(omega, POINT.x*scale, POINT.y*scale);
+                                y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,POINT.x*scale,
+                                        POINT.y*scale, POINT.z*scale, Axy_90);
+                                x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale, POINT.y*scale);
+                                point.setPosition(x_render, y_render);
+                            }
+                            break;
                         case sf::Keyboard::Up:
-                            gamma_ref--;
-                            //point.setPosition(omega, gamma); -
-                            //Скопировать во все остальные кнопки, чтобы тупо покатать
-                            //точку по экрану
-                            Camera.z = r*cos(gamma*GTR);
+                            gamma_ref-=speed;
+                            Axy_90 = Angle_to_X(omega, POINT.x, POINT.y);
+                            y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,
+                                                                POINT.x*scale,
+                                                                POINT.y*scale,
+                                                                POINT.z*scale,
+                                                                 Axy_90);
 
-                            y_render = Camera_Angle_To_Render_Y(gamma,
-                                                                center_y,
-                                                                POINT,
-                                                                Camera);
                             point.setPosition(x_render, y_render);
                             break;
                         case sf::Keyboard::Down:
-                            gamma_ref++;
+                            gamma_ref+=speed;
+                            Axy_90 = Angle_to_X(omega, POINT.x, POINT.y);
+                            y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,
+                                                                 POINT.x*scale,
+                                                                 POINT.y*scale,
+                                                                 POINT.z*scale,
+                                                                  Axy_90);
 
-                            Camera.z = r*cos(gamma*GTR);
-
-                            y_render = Camera_Angle_To_Render_Y(gamma,
-                                                                center_y,
-                                                                POINT,
-                                                                Camera);
                             point.setPosition(x_render, y_render);
                             break;
                         case sf::Keyboard::Right:
-                            omega_ref++;
+                            omega_ref+=speed;
+                            x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale,
+                                                                  POINT.y*scale);
 
-                            Camera.x = r*sin(omega*GTR);
-                            Camera.y = r*cos(omega*GTR);
-
-                            x_render = Camera_Angle_To_Render_X(omega,
-                                                                center_x,
-                                                                POINT,
-                                                                Camera);
                             point.setPosition(x_render, y_render);
                             break;
                         case sf::Keyboard::Left:
-                            omega_ref--;
+                            omega_ref-=speed;
+                            x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale,
+                                                                 POINT.y*scale);
 
-                            Camera.x = r*sin(omega*GTR);
-                            Camera.y = r*cos(omega*GTR);
-
-                             x_render = Camera_Angle_To_Render_X(omega,
-                                                                center_x,
-                                                                POINT,
-                                                                Camera);
                             point.setPosition(x_render, y_render);
                             break;
                         default:
                             break;
                     }
-                default:
-                    break;
             }
         }
          Engine.clear(sf::Color::White);
-        //Здесь всё отрисовывать
-         Engine.draw(point);
 
-         Engine.draw(center); //Цент всегда виден, а потому рендерится последним
-         Engine.display();
-    }
+        sf::Vertex line[] ={
+            sf::Vertex(sf::Vector2f(center_x, center_y)),
+            sf::Vertex(sf::Vector2f(x_render, y_render))
+        };
+        Engine.draw(line, 2, sf::Lines)
+
+        Engine.draw(center);
+        Engine.draw(point);
+        Engine.display();
+        }
     return 0;
 }
