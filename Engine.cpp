@@ -2,7 +2,7 @@
 #include <vector>
 
 float scale = 10;
-float speed = 4;
+int speed = 4;
 
 void Center_Update(int& center_x, int& center_y,
                     sf::Vector2u Eng_size, sf::CircleShape &CenterPoint)
@@ -53,23 +53,27 @@ int main() //StartEngine()
 
     Point Center(0,0,0, center);
 
-    Point thing(100, 20, 0, point_shape);
-    Point thing2(-10, 20, 50, point_shape);
-    Point thing3(100, -20, 0, point_shape);
+    Point thing(40, 40, 170, point_shape);
+    Point thing2(0, -100, 40, point_shape);
+    Point thing3(-100, 0, 40, point_shape);
+    Point thing4(100, 0, -40, point_shape);
+    Point thing5(0, 100, -40, point_shape);
 
     std::vector<Point> PointVector;
     PointVector.push_back(Center);
     PointVector.push_back(thing);
     PointVector.push_back(thing2);
     PointVector.push_back(thing3);
+    PointVector.push_back(thing4);
+    PointVector.push_back(thing5);
 
     for(int i = 0; i<PointVector.capacity(); i++)
         PointVector[i].setPoint(omega_ref, gamma_ref, center_x, center_y);
 
     Engine.setFramerateLimit(60);
-
     while (Engine.isOpen())
     {
+
         sf::Event event;
         while (Engine.pollEvent(event))
         {
@@ -91,7 +95,7 @@ int main() //StartEngine()
                             speed++;
                             break;
                         case sf::Keyboard::S:
-                            if(speed>2)
+                            if(speed>1)
                                 speed--;
                             break;
                         case sf::Keyboard::Up:
@@ -117,6 +121,8 @@ int main() //StartEngine()
                             break;
                         case sf::Keyboard::Right:
                             omega_ref+=speed;
+                            if(omega>360)
+                                omega = 0;
                             std::cout<<gamma<<", "<<omega<<"\n";
                             X_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
                             Y_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
@@ -127,6 +133,8 @@ int main() //StartEngine()
                             break;
                         case sf::Keyboard::Left:
                             omega_ref-=speed;
+                            if(omega<0)
+                                omega = 360;
                             std::cout<<gamma<<", "<<omega<<"\n";
                             X_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
                             Y_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);

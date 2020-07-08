@@ -23,24 +23,26 @@ public:
 
     float Angle_to_X(float &omega)
     {
+        float sign = 1;
         float cam_x = cos(GTR*omega);
         float cam_y = sin(GTR*omega);
 
         float ch = cam_x*x+cam_y*y;
         float zn = sqrt(pow(cam_x, 2)+pow(cam_y, 2))*
                     sqrt(pow(x, 2)+pow(y, 2));
-
+        if(x<0&&y>=0)
+            sign*=-1;
         float output;
         if(ch==0)
-        output = sqrt(pow(x, 2)+pow(y, 2));
+        output = sqrt(pow(x, 2)+pow(y, 2))*sign;
         else
-        output = sqrt(pow(x, 2)+pow(y, 2))*sin(acos(ch/zn));
+        output = sqrt(pow(x, 2)+pow(y, 2))*sin(acos(ch/zn))*sign;
 
         if((omega>(360))||(omega<-360))
             omega=0;
         if (omega<-180)
             omega =180;
-        std::cout<<x<<" "<<y<<"  "<<z<<" : "<<atan(y/x)/GTR<<std::endl;
+        //std::cout<<x<<" "<<y<<"  "<<z<<" : "<<atan(y/x)/GTR<<std::endl;
         if((omega>180+(atan(y/x)/GTR)&&omega<360+(atan(y/x)/GTR))
         ||(omega<(atan(y/x)/GTR)&&omega>-180+(atan(y/x)/GTR)))
             output*=-1;
@@ -50,6 +52,7 @@ public:
 
     float Angle_to_Y(float &gamma, float Axy_90)
     {
+        float sign = 1;
         float cam_xy = cos(GTR*gamma);
         float cam_z = sin(GTR*gamma);
 
@@ -57,11 +60,14 @@ public:
         float zn = sqrt(pow(cam_xy, 2)+pow(cam_z, 2))*
 				sqrt(pow(z, 2)+pow(Axy_90, 2));
 
+        if(z<0)
+            sign*=-1;
+
 		float  output;
         if(ch==0)
-        output = sqrt(pow(z,2)+pow(Axy_90,2));
+        output = sqrt(pow(z,2)+pow(Axy_90,2))*sign;
         else
-        output = sqrt(pow(z,2)+pow(Axy_90,2))*sin(acos(ch/zn));
+        output = sqrt(pow(z,2)+pow(Axy_90,2))*sin(acos(ch/zn))*sign;
 
         if((gamma>(360))||(gamma<-360))
             gamma=0;
@@ -70,7 +76,6 @@ public:
         if((gamma>180+(atan(Axy_90/z)/GTR)&&gamma<360+(atan(Axy_90/z)/GTR))
         ||(gamma<(atan(Axy_90/z)/GTR)&&gamma>-180+(atan(Axy_90/z)/GTR)))
             output*=-1;
-
         return output;
     }
 
@@ -84,7 +89,7 @@ public:
     }
 
     Point(float x, float y, float z, sf::CircleShape pointShape)
-    {
+    {;
         this->x = x;
         this->y = y;
         this->z = z;
