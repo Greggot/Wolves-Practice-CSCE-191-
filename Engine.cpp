@@ -1,103 +1,76 @@
-#include <SFML/Graphics.hpp>
-#include <cmath>
-#include <iostream>
-#include "point.h"
+#include "Point.cpp"
+#include <vector>
 
-float const GTR = 0.0174533;    //Grad to Rad
-float const RTG = 1/GTR;
-float speed =4;
+float scale = 10;
+float speed = 4;
 
-
-float Angle_to_X(float &omega, float x, float y)
-{
-
-	float cum_x = cos(GTR*omega);
-	float cum_y = sin(GTR*omega);
-
-	float ch = cum_x*x+cum_y*y;
-
-	float zn = sqrt(pow(cum_x, 2)+pow(cum_y, 2))*
-				sqrt(pow(x, 2)+pow(y, 2));
-	float output = sqrt(pow(x, 2)+pow(y, 2))*sin(acos(ch/zn));
-
-	if(omega>(360+(atan(y/x)/GTR))||(omega<-360+(atan(y/x)/GTR)))
-        omega=(atan(y/x)/GTR);
-    if((omega>180+(atan(y/x)/GTR)&&omega<360+(atan(y/x)/GTR))
-       ||(omega<(atan(y/x)/GTR)&&omega>-180+(atan(y/x)/GTR)))
-        output*=-1;
-	return output;
-}
-
-float sign = 1;
-
-float Angle_to_Y(float &gamma, float &omega, float x, float y, float z, float Axy_90)
-{
-
-    float cum_xy = cos(GTR*gamma);
-	float cum_z = sin(GTR*gamma);
-
-    float ch = cum_xy*z+cum_z*Axy_90;
-
-	float zn = sqrt(pow(cum_xy, 2)+pow(cum_z, 2))*
-				sqrt(pow(z, 2)+pow(Axy_90, 2));
-
-    float output = sqrt(pow(z,2)+pow(Axy_90,2))*sin(acos(ch/zn))*sign;
-
-    if(gamma>(360+(atan(Axy_90/z)*RTG))||(gamma<-360+(atan(Axy_90/z)*RTG)))
-        gamma=(atan(Axy_90/z)*RTG);
-    if((gamma>180+(atan(Axy_90/z)*RTG)&&gamma<360+(atan(Axy_90/z)*RTG))
-       ||(gamma<(atan(Axy_90/z)*RTG)&&gamma>-180+(atan(Axy_90/z)*RTG)))
-        output*=-1;
-
-    return output;
-}
-
-void Center_Update(int& center_x, int& center_y, sf::Vector2u Eng_size)
+void Center_Update(int& center_x, int& center_y,
+                    sf::Vector2u Eng_size, sf::CircleShape &CenterPoint)
 {
     center_y = Eng_size.y/2;
     center_x = Eng_size.x/2;
+    CenterPoint.setPosition(center_x, center_y);
 }
 
-int main()
+int main() //StartEngine()
 {
-    float x_render; float y_render;
-    float Axy_90;
-    float scale = 10;
-    RealPoint POINT {10, -10, 10};
     int center_x, center_y; //Rendering Center
     float omega, gamma;     //Keyboard Input in grad
 
     omega = 0; float& omega_ref = omega;
-    gamma = 1;  float& gamma_ref = gamma;
-    center_x = 300; int &center_x_ref = center_x;
-    center_y = 200; int &center_y_ref = center_y;
+    gamma = 0;  float& gamma_ref = gamma;
+    center_x = 400; int &center_x_ref = center_x;
+    center_y = 300; int &center_y_ref = center_y;
 
-    sf::RenderWindow Engine(sf::VideoMode(600, 400), "Window");
-    sf::Vector2u Eng_size = Engine.getSize();
+    sf::RenderWindow Engine(sf::VideoMode(800, 600), "Window");
 
-    sf::CircleShape center(5.f);
+    sf::CircleShape center(3.f);
     center.setFillColor(sf::Color::White);
-    center.setOutlineThickness(2.f);
+    center.setOutlineThickness(1.f);
     center.setOutlineColor(sf::Color::Black);
     center.setPosition(center_x, center_y);
+    sf::CircleShape &center_ref = center;
 
-    sf::CircleShape point(5.f);
-    point.setFillColor(sf::Color(245,230,255,255));
-    point.setOutlineThickness(2.f);
-    point.setOutlineColor(sf::Color::Black);
+    sf::CircleShape point_shape(5.f);
+    point_shape.setFillColor(sf::Color(245,230,255,255));
+    point_shape.setOutlineThickness(2.f);
+    point_shape.setOutlineColor(sf::Color::Black);
 
-    Axy_90 = Angle_to_X(omega, POINT.x*scale, POINT.y*scale);
-    y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,POINT.x*scale,
-                                        POINT.y*scale, POINT.z*scale, Axy_90);
-    x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale, POINT.y*scale);
-    point.setPosition(x_render, y_render);
+    sf::CircleShape X(3.f);
+    X.setFillColor(sf::Color::Red);
+    sf::CircleShape Y(3.f);
+    Y.setFillColor(sf::Color::Green);
+    sf::CircleShape Z(3.f);
+    Z.setFillColor(sf::Color::Blue);
+
+    Point X_axys(100, 0, 0, X);
+    Point Y_axys(0, 100, 0, Y);
+    Point Z_axys(0, 0, 100, Z);
+
+    X_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+    Y_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+    Z_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+
+    Point Center(0,0,0, center);
+
+    Point thing(100, 20, 0, point_shape);
+    Point thing2(-10, 20, 50, point_shape);
+    Point thing3(100, -20, 0, point_shape);
+
+    std::vector<Point> PointVector;
+    PointVector.push_back(Center);
+    PointVector.push_back(thing);
+    PointVector.push_back(thing2);
+    PointVector.push_back(thing3);
+
+    for(int i = 0; i<PointVector.capacity(); i++)
+        PointVector[i].setPoint(omega_ref, gamma_ref, center_x, center_y);
 
     Engine.setFramerateLimit(60);
 
     while (Engine.isOpen())
     {
         sf::Event event;
-
         while (Engine.pollEvent(event))
         {
             switch (event.type)
@@ -107,83 +80,75 @@ int main()
                     break;
                 case sf::Event::Resized:
                     {
-                    Center_Update(center_x_ref, center_y_ref, Engine.getSize());
-                    center.setPosition(center_x, center_y);
+                    Center_Update(center_x_ref, center_y_ref,
+                                   Engine.getSize(), center_ref);
                     break;
                     }
                 case sf::Event::KeyPressed:
                     switch(event.key.code)
                     {
-                        case sf::Keyboard::Q:
-                            scale++;
-                            Axy_90 = Angle_to_X(omega, POINT.x*scale, POINT.y*scale);
-                            y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,POINT.x*scale,
-                                        POINT.y*scale, POINT.z*scale, Axy_90);
-                            x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale, POINT.y*scale);
-                            point.setPosition(x_render, y_render);
-                            break;
                         case sf::Keyboard::W:
-                            if(scale>2)
-                            {
-                                scale--;
-                                Axy_90 = Angle_to_X(omega, POINT.x*scale, POINT.y*scale);
-                                y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,POINT.x*scale,
-                                        POINT.y*scale, POINT.z*scale, Axy_90);
-                                x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale, POINT.y*scale);
-                                point.setPosition(x_render, y_render);
-                            }
+                            speed++;
+                            break;
+                        case sf::Keyboard::S:
+                            if(speed>2)
+                                speed--;
                             break;
                         case sf::Keyboard::Up:
                             gamma_ref-=speed;
-                            Axy_90 = Angle_to_X(omega, POINT.x, POINT.y);
-                            y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,
-                                                                POINT.x*scale,
-                                                                POINT.y*scale,
-                                                                POINT.z*scale,
-                                                                 Axy_90);
+                            std::cout<<gamma<<", "<<omega<<"\n";
+                            X_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            Y_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            Z_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
 
-                            point.setPosition(x_render, y_render);
+                            for(int i = 0; i<PointVector.size(); i++)
+                                PointVector[i].setPoint(omega_ref, gamma_ref, center_x, center_y);
+
                             break;
                         case sf::Keyboard::Down:
                             gamma_ref+=speed;
-                            Axy_90 = Angle_to_X(omega, POINT.x, POINT.y);
-                            y_render = Eng_size.y/2 + Angle_to_Y(gamma_ref, omega_ref,
-                                                                 POINT.x*scale,
-                                                                 POINT.y*scale,
-                                                                 POINT.z*scale,
-                                                                  Axy_90);
+                            std::cout<<gamma<<", "<<omega<<"\n";
+                            X_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            Y_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            Z_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            for(int i = 0; i<PointVector.size(); i++)
+                                PointVector[i].setPoint(omega_ref, gamma_ref, center_x, center_y);
 
-                            point.setPosition(x_render, y_render);
                             break;
                         case sf::Keyboard::Right:
                             omega_ref+=speed;
-                            x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale,
-                                                                  POINT.y*scale);
+                            std::cout<<gamma<<", "<<omega<<"\n";
+                            X_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            Y_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            Z_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            for(int i = 0; i<PointVector.size(); i++)
+                                PointVector[i].setPoint(omega_ref, gamma_ref, center_x, center_y);
 
-                            point.setPosition(x_render, y_render);
                             break;
                         case sf::Keyboard::Left:
                             omega_ref-=speed;
-                            x_render = Eng_size.x/2 - Angle_to_X(omega_ref, POINT.x*scale,
-                                                                 POINT.y*scale);
+                            std::cout<<gamma<<", "<<omega<<"\n";
+                            X_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            Y_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            Z_axys.setPoint(omega_ref, gamma_ref, center_x, center_y);
+                            for(int i = 0; i<PointVector.size(); i++)
+                                PointVector[i].setPoint(omega_ref, gamma_ref, center_x, center_y);
 
-                            point.setPosition(x_render, y_render);
                             break;
                         default:
                             break;
                     }
             }
         }
-         Engine.clear(sf::Color::White);
+        Engine.clear(sf::Color::White);
 
-        sf::Vertex line[] ={
-            sf::Vertex(sf::Vector2f(center_x, center_y)),
-            sf::Vertex(sf::Vector2f(x_render, y_render))
-        };
-        Engine.draw(line, 2, sf::Lines)
+        for(int i = 0; i<PointVector.size(); i++)
+            Engine.draw(PointVector[i].getShape());
 
-        Engine.draw(center);
-        Engine.draw(point);
+        Engine.draw(X_axys.getShape());
+        Engine.draw(Y_axys.getShape());
+        Engine.draw(Z_axys.getShape());
+
         Engine.display();
         }
     return 0;
