@@ -1,17 +1,9 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <SFML/Graphics.hpp>
-
 
     float const GTR = 0.0174533;
     float const RTG = 1/GTR;
-
-/*float progress(float x, float y)
-{
-    float out;
-    if
-}*/
 
 
 class Point
@@ -19,8 +11,6 @@ class Point
 private:
     float x, y, z;
     float x_render, y_render;
-    sf::CircleShape pointShape;
-    sf::Color PointColor;
 public:
     Point(){}
      Point(float x, float y, float z)
@@ -95,29 +85,6 @@ public:
         float omega_90 = omega-90;
         x_render = center_x + Angle_to_X(omega)*scale;
         y_render = center_y + Angle_to_Y(gamma, Angle_to_X(omega_90))*scale;
-        pointShape.setPosition(x_render, y_render);
-    }
-
-    Point(float x, float y, float z, sf::CircleShape pointShape)
-    {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-        this->pointShape = pointShape;
-    }
-     Point(float x, float y, float z, sf::Color PointColor)
-    {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-        this->PointColor = PointColor;
-    }
-    operator= (const Point &thing)
-    {
-        x = thing.x;
-        y = thing.y;
-        z = thing.z;
-        pointShape = thing.pointShape;
     }
 
     float get_x()
@@ -154,43 +121,14 @@ public:
         return y_render;
     }
 
-    sf::Color getColor()
-    {
-        return PointColor;
-    }
-
-    void setColor(sf::Color PointColor)
-    {
-        this->PointColor = PointColor;
-    }
-
     void RenderOut()
     {
         std::cout<<x_render<<", "<<y_render<<"\n";
     }
 
-    sf::CircleShape getShape()
-    {
-        return pointShape;
-    }
-    void setShape(sf::CircleShape pointShape)
-    {
-        this->pointShape = pointShape;
-    }
-    void colorOut()
-    {
-        std::cout<<"{"<<(int)PointColor.r<<", "<<(int)PointColor.g<<", "<<(int)PointColor.b<<"}\n ";
-    }
     void Out()
     {
         std::cout<<"("<<x<<", "<<y<<", "<<z<<")"<<std::endl;
     }
-};
-
-struct Triangle
-{
-    unsigned int index[3];
-    Point TestDistancePoint;
-    unsigned int distance;
 };
 
