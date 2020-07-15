@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>Images/cub2.png</file>
+        <file>Images/cilindr.png</file>
+        <file>Images/konus2.png</file>
+        <file>Images/piramida.png</file>
+        <file>Images/prizma.png</file>
+        <file>Images/shar.png</file>
+        <file>Images/parall.png</file>
+        <file>Images/1579274164_20-52.jpg</file>
+        <file>Images/Без имени-1.jpg</file>
+        <file>Images/icon.ico</file>
+    </qresource>
+</RCC>
