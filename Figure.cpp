@@ -127,7 +127,7 @@ public:
     }
     std::vector<Polygone> getTriangle()
     {
-            return Polygons;
+        return Polygons;
     }
     std::vector<Point> getPOINTS()
     {
@@ -319,7 +319,7 @@ public:
     }
 
     Prism_Cylinder(double FigureHeight, double Radius, int PointNumber,
-                    Point cent, sf::Color FigureColor)
+                   Point cent, sf::Color FigureColor)
     {
         this->FigureColor = FigureColor;
         this->FigureHeight = FigureHeight;
@@ -450,7 +450,7 @@ public:
     }
 
     Pyramid_Cone(double FigureHeight, double Radius, int PointNumber,
-                  Point cent, sf::Color FigureColor)
+                 Point cent, sf::Color FigureColor)
     {
         double L = sqrt(pow(Radius, 2)+pow(FigureHeight, 2));
         this->FigureHeight = FigureHeight;
@@ -551,7 +551,7 @@ public:
         POINTS.push_back(Bottom);
         POINTS.push_back(cent);
 
-
+        
         return POINTS;
     }
 
@@ -563,9 +563,9 @@ public:
            Polygone temp;
            if(i!=PointPack)
                 temp = Polygone(0, i, i+1, POINTS);
-            else
+           else
                 temp = Polygone(0, i, 1, POINTS);
-            Polygons.push_back(temp);
+           Polygons.push_back(temp);
        }
 
        for(unsigned long long k = 0;k<((PointNumber-2)/(PointPack))-1; k++)
@@ -584,8 +584,8 @@ public:
                    temp_one = Polygone (i, i+PointPack, k*PointPack+1+PointPack, POINTS);
                    temp_two = Polygone(i, k*PointPack+1+PointPack, k*PointPack+1, POINTS);
                }
-                Polygons.push_back(temp_one);
-                Polygons.push_back(temp_two);
+               Polygons.push_back(temp_one);
+               Polygons.push_back(temp_two);
            }
        }
 
@@ -594,12 +594,12 @@ public:
            Polygone temp;
            if(i!=PointNumber-2)
                 temp = Polygone(PointNumber-1, i, i+1, POINTS);
-            else
+           else
                 temp = Polygone(PointNumber-1,PointNumber-2,PointNumber-PointPack-1,  POINTS);
-            Polygons.push_back(temp);
+           Polygons.push_back(temp);
        }
 
-        return Polygons;
+       return Polygons;
     }
 
     std::vector<Polygone> getTriangle()
@@ -614,8 +614,8 @@ public:
     Sphere (double Radius, double diffAngle, Point cent,
                 sf::Color FigureColor)
         {
-        S = 4*M_PI*Radius*Radius;
-        V = M_PI*Radius*Radius*Radius;
+            S = 4*M_PI*Radius*Radius;
+            V = M_PI*Radius*Radius*Radius;
             this->Radius = Radius;
             this->cent = cent;
             this->diffAngle = diffAngle;
@@ -626,7 +626,7 @@ public:
             Polygons=createPolygons();
 
         }
-        Sphere (double Radius, double diffAngle, Point cent, sf::CircleShape PointShape)
+    Sphere (double Radius, double diffAngle, Point cent, sf::CircleShape PointShape)
         {
             S = 4*M_PI*pow(Radius, 2);
             V = M_PI*pow(Radius, 3);
@@ -640,11 +640,11 @@ public:
             POINTS[i].setShape(PointShape);
 
         }
-        double getS()
+    double getS()
         {
             return S;
         }
-        double getV()
+    double getV()
         {
             return V;
         }
@@ -777,7 +777,7 @@ public:
     }
     std::vector<Polygone> getTriangle()
     {
-            return Polygons;
+        return Polygons;
     }
     std::vector<Point> getPOINTS()
     {
