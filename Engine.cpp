@@ -1,5 +1,6 @@
 #include "Figure.cpp"
 #include <vector>
+#include <string>
 
 class Engine
 {
@@ -130,7 +131,6 @@ public:
         center_y = win_height/2;
 
         sf::RenderWindow Engine(sf::VideoMode(win_width, win_height), "3D presentation");
-
         sf::CircleShape X(3.f);
         X.setFillColor(sf::Color::Red);
         sf::CircleShape Y(3.f);
@@ -358,6 +358,7 @@ public:
 
             for(unsigned long long i = 0; i<Axys.size(); i++)
                 Engine.draw(Axys[i].getShape());
+
 
             Engine.display();
             }

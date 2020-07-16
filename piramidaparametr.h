@@ -18,6 +18,8 @@ public:
 private slots:
     void on_ok_clicked();
 
+    void on_ok_2_clicked();
+
 private:
     Ui::PiramidaParametr *ui;
 };

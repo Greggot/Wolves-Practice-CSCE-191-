@@ -75,3 +75,19 @@ void PiramidaParametr::on_ok_clicked()
      Engine (1280, 720, POINTS, POLYGONES, figureNumber);
    }
 
+
+void PiramidaParametr::on_ok_2_clicked()
+{
+    int vys = (ui->vys->text()).toInt();
+    int diag = (ui->dm->text()).toInt();
+    int tch = (ui->rebro_5->text()).toInt();
+    double x = (ui->xx->text()).toDouble();
+    double y = (ui->yy->text()).toDouble();
+    double z = (ui->zz->text()).toDouble();
+        Point center(x,y,z);
+        Prism_Cylinder thing(vys, diag, tch*2, center,sf::Color::Black);
+        QString pl = QString::number(thing.getS());
+        QString ob = QString::number(thing.getV());
+        ui->pl->setText(pl);
+        ui->ob->setText(ob);
+}

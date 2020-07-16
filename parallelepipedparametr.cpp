@@ -71,3 +71,19 @@ void Parallelepipedparametr::on_ok_clicked()
     Engine (1280, 720, POINTS, POLYGONES, figureNumber);
 }
 
+
+void Parallelepipedparametr::on_ok_2_clicked()
+{
+    double  vys = (ui->vys->text()).toDouble();
+    double  shir = (ui->shir->text()).toDouble();
+    double  dl = (ui->dl->text()).toDouble();
+    double x = (ui->xx->text()).toDouble();
+    double y = (ui->yy->text()).toDouble();
+    double z = (ui->zz->text()).toDouble();
+        Point center(x,y,z);
+         Parallelepiped thing(vys,shir,dl,center,sf::Color::Black);
+        QString pl = QString::number(thing.getS());
+        QString ob = QString::number(thing.getV());
+        ui->pl->setText(pl);
+        ui->ob->setText(ob);
+}

@@ -40,7 +40,7 @@
    <widget class="QPushButton" name="ok">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>260</x>
       <y>310</y>
       <width>291</width>
       <height>31</height>
@@ -224,11 +224,6 @@
            <string>Полигонами(в разработке)</string>
           </property>
          </item>
-         <item>
-          <property name="text">
-           <string>Точками</string>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>
@@ -331,6 +326,42 @@
       </layout>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="pl">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>300</y>
+      <width>155</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="ob">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>320</y>
+      <width>155</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
   </widget>
  </widget>

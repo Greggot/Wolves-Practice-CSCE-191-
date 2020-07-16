@@ -1,6 +1,7 @@
 #include "cubparametr.h"
 #include "ui_cubparametr.h"
 #include "Engine.cpp"
+#include "sv.h"
 
 CubParametr::CubParametr(QWidget *parent) :
     QDialog(parent),
@@ -28,6 +29,7 @@ void CubParametr::on_ok_clicked()
     std::vector<std::vector<Point>> POINTS;
     std::vector<std::vector<Polygone>> POLYGONES;
     Point center(x,y,z);
+
     switch(tp)
     {
     case 0:
@@ -54,6 +56,8 @@ void CubParametr::on_ok_clicked()
     Cube thing(rebro, center, color);
     POINTS.push_back(thing.getPOINTS());
     POLYGONES.push_back(thing.getTriangle());
+    QString pl = QString::number(thing.getS());
+    thing.getV();
         break;
     }
     case 1:
@@ -68,4 +72,21 @@ void CubParametr::on_ok_clicked()
     }
     int figureNumber = 1;
     Engine (1280, 720, POINTS, POLYGONES, figureNumber);
+}
+
+void CubParametr::on_ok_2_clicked()
+{double rebro = (ui->rebro->text()).toDouble();
+    double x = (ui->rebro_2->text()).toDouble();
+    double y = (ui->rebro_3->text()).toDouble();
+    double z = (ui->rebro_4->text()).toDouble();
+    int cl = (ui->color->currentIndex());  /// 0 это красный, 1 это зелёный, 2 это синий
+    int tp = (ui->comboBox_2->currentIndex()); /// 0 это точками, 1 это полигонами
+    std::vector<std::vector<Point>> POINTS;
+    std::vector<std::vector<Polygone>> POLYGONES;
+    Point center(x,y,z);
+    Cube thing(rebro, center, sf::Color::Black);
+    QString pl = QString::number(thing.getS());
+    QString ob = QString::number(thing.getV());
+    ui->pl->setText(pl);
+    ui->ob->setText(ob);
 }

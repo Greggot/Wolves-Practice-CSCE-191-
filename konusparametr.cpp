@@ -74,3 +74,21 @@ void KonusParametr::on_ok_2_clicked()
      int figureNumber = 1;
      Engine (1280, 720, POINTS, POLYGONES, figureNumber);
    }
+
+void KonusParametr::on_ok_3_clicked()
+{
+    int vys = (ui->vys->text()).toInt();
+    int diag = (ui->dm->text()).toInt();
+    int tch = (ui->rebro_5->text()).toInt();
+    double x = (ui->xx->text()).toDouble();
+    double y = (ui->yy->text()).toDouble();
+    double z = (ui->zz->text()).toDouble();
+    int cl = (ui->color_2->currentIndex());  /// 0 это красный, 1 это зелёный, 2 это синий
+    int tp = (ui->otbr->currentIndex()); /// 0 это точками, 1 это полигонами
+        Point center(x,y,z);
+        Prism_Cylinder thing(vys, diag, tch*2, center,sf::Color::Black);
+        QString pl = QString::number(thing.getS());
+        QString ob = QString::number(thing.getV());
+        ui->pl->setText(pl);
+        ui->ob->setText(ob);
+}

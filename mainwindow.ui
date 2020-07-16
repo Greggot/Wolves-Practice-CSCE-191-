@@ -26,8 +26,8 @@
    <string>WI3DE Programm</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="икон">
-    <normaloff>Images/икон.ico</normaloff>Images/икон.ico</iconset>
+   <iconset>
+    <normaloff>Images/icon.ico</normaloff>Images/icon.ico</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>

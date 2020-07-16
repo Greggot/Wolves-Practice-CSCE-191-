@@ -27,8 +27,7 @@ void SharParametr::on_ok_clicked()
     std::vector<std::vector<Point>> POINTS;
     std::vector<std::vector<Polygone>> POLYGONES;
     Point center(x,y,z);
-     Point cent(0,0,0);
-     int ang=0;
+     double ang=0;
      switch (tp)
      {
      case 0:
@@ -55,27 +54,24 @@ void SharParametr::on_ok_clicked()
      switch (det)
      {
      case 0:
-         ang=10;
+         ang=9;
          break;
      case 1:
-         ang=15;
+         ang=10;
          break;
      case 2:
-         ang=20;
+         ang=15;
          break;
      case 3:
-         ang=25;
+         ang=18;
          break;
      case 4:
          ang=30;
          break;
      case 5:
-         ang=35;
+         ang=36;
          break;
      case 6:
-         ang=40;
-         break;
-     case 7:
          ang=45;
          break;
      }
@@ -85,18 +81,8 @@ void SharParametr::on_ok_clicked()
      POLYGONES.push_back(thing.getTriangle());
      break;
      }
-     case 1:
-     {
-         sf::CircleShape shape (3.f);
-         shape.setFillColor(sf::Color(69,228,255,255));
-         shape.setOutlineThickness(2.f);
-         shape.setOutlineColor(sf::Color(0,0,0,255));
-         Sphere thing(rad,ang,center,shape);
-         POINTS.push_back(thing.getPOINTS());
-         POLYGONES.push_back(thing.getTriangle());
-            break;
-     }
-     }
+   }
      int figureNumber = 1;
      Engine (1280, 720, POINTS, POLYGONES, figureNumber);
 }
+
