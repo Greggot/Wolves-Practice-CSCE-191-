@@ -66,14 +66,18 @@ void SharParametr::on_ok_clicked()
          ang=18;
          break;
      case 4:
-         ang=30;
+         ang=24;
          break;
      case 5:
-         ang=36;
+         ang=30;
          break;
      case 6:
+         ang=36;
+         break;
+     case 7:
          ang=45;
          break;
+
      }
 
      Sphere thing(rad,ang,center,Figurecolor);
