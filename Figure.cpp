@@ -8,9 +8,11 @@ private:
     int PointNumber;
     int PointBound;
 
-    float diffAngle;
-    float FigureHeight;
-    float Radius;
+	double S; double V;
+
+    double diffAngle;
+    double FigureHeight;
+    double Radius;
 
     sf::Color FigureColor;
 
@@ -21,11 +23,11 @@ public:
     std::vector<Point> POINTS;
     std::vector<Point> createPoints()
     {
-        for(float i = 0; i<360; i+=diffAngle)
+        for(double i = 0; i<360; i+=diffAngle)
         {
-            float x = cent.get_x()+Radius*cos((i+45)*GTR);
-            float y = cent.get_y()+Radius*sin((i+45)*GTR);
-            float z = cent.get_z()-(FigureHeight/2);
+            double x = cent.get_x()+Radius*cos((i+45)*GTR);
+            double y = cent.get_y()+Radius*sin((i+45)*GTR);
+            double z = cent.get_z()-(FigureHeight/2);
 
             if(i>180)
             {
@@ -48,11 +50,11 @@ public:
             Point temp_neg (x,y,z, FigureColor);
             POINTS.push_back(temp_neg);
         }
-        for(float i = 0; i<360; i+=diffAngle)
+        for(double i = 0; i<360; i+=diffAngle)
         {
-            float x = cent.get_x()+Radius*cos((i+45)*GTR);
-            float y = cent.get_y()+Radius*sin((i+45)*GTR);
-            float z = cent.get_z()+(FigureHeight/2);
+            double x = cent.get_x()+Radius*cos((i+45)*GTR);
+            double y = cent.get_y()+Radius*sin((i+45)*GTR);
+            double z = cent.get_z()+(FigureHeight/2);
 
             if(i>180)
             {
@@ -133,10 +135,12 @@ public:
         return POINTS;
     }
 
-    Cube(float BasicLine, Point cent, sf::Color FigureColor)
+    Cube(double BasicLine, Point cent, sf::Color FigureColor)
     {
         this->FigureColor = FigureColor;
         this->cent = cent;
+		S = pow(BasicLine, 2)*6;
+		V = pow(BasicLine, 3);
         FigureHeight = BasicLine;
         Radius=FigureHeight*sqrt(2)/2;
         PointNumber = 8;
@@ -146,15 +150,17 @@ public:
         Polygons = createPolygons();
     }
 
-    Cube(float BasicLine, Point cent, sf::CircleShape PointShape)
+    Cube(double BasicLine, Point cent, sf::CircleShape PointShape)
     {
         this->cent = cent;
+		S = pow(BasicLine, 2)*6;
+		V = pow(BasicLine, 3);
         FigureHeight = Radius = BasicLine;
         PointNumber = 8;
         diffAngle = 90;
         POINTS=createPoints();
         Polygons = createPolygons();
-        for(int i = 0; i<POINTS.capacity(); i++)
+        for(unsigned long long i = 0; i<POINTS.size()-3; i++)
             POINTS[i].setShape(PointShape);
     }
 
@@ -166,6 +172,14 @@ public:
     {
         return PointNumber;
     }
+	double getS()
+	{
+		return S;
+	}
+	double getV()
+	{
+		return V;
+	}
 };
 ///---------PRISM-CYLINDER---------------------------------------------------
 class Prism_Cylinder
@@ -174,11 +188,13 @@ private:
     int PointNumber;
     int PointBound;
 
+	double S; double V;
+
     sf::Color FigureColor;
 
-    float diffAngle;
-    float FigureHeight;
-    float Radius;
+    double diffAngle;
+    double FigureHeight;
+    double Radius;
 
     Point cent;
 
@@ -191,11 +207,11 @@ public:
     }
     std::vector<Point> createPoints()
     {
-        for(float i = 0; i<360; i+=diffAngle)
+        for(double i = 0; i<360; i+=diffAngle)
         {
-            float x = cent.get_x()+Radius*cos((i+45)*GTR);
-            float y = cent.get_y()+Radius*sin((i+45)*GTR);
-            float z = cent.get_z()-(FigureHeight/2);
+            double x = cent.get_x()+Radius*cos((i+45)*GTR);
+            double y = cent.get_y()+Radius*sin((i+45)*GTR);
+            double z = cent.get_z()-(FigureHeight/2);
 
             if(i>180)
             {
@@ -218,11 +234,11 @@ public:
             Point temp_neg (x,y,z, FigureColor);
             POINTS.push_back(temp_neg);
         }
-        for(float i = 0; i<360; i+=diffAngle)
+        for(double i = 0; i<360; i+=diffAngle)
         {
-            float x = cent.get_x()+Radius*cos((i+45)*GTR);
-            float y = cent.get_y()+Radius*sin((i+45)*GTR);
-            float z = cent.get_z()+(FigureHeight/2);
+            double x = cent.get_x()+Radius*cos((i+45)*GTR);
+            double y = cent.get_y()+Radius*sin((i+45)*GTR);
+            double z = cent.get_z()+(FigureHeight/2);
 
             if(i>180)
             {
@@ -304,9 +320,11 @@ public:
         return POINTS;
     }
 
-    Prism_Cylinder(float FigureHeight, float Radius, int PointNumber,
+    Prism_Cylinder(double FigureHeight, double Radius, int PointNumber,
                     Point cent, sf::Color FigureColor)
     {
+		S = 2*M_PI*(pow(Radius, 2)+Radius*FigureHeight);
+		V = 2*M_PI*Radius*FigureHeight;
         this->FigureColor = FigureColor;
         this->FigureHeight = FigureHeight;
         this->Radius = Radius;
@@ -319,17 +337,27 @@ public:
         Polygons = createPolygons();
     }
 
-    Prism_Cylinder(float BasicLine, float R, int number, Point cent, sf::CircleShape PointShape)
+    Prism_Cylinder(double BasicLine, double R, int number, Point cent, sf::CircleShape PointShape)
     {
+		S = 2*M_PI*(pow(Radius, 2)+Radius*FigureHeight);
+		V = 2*M_PI*Radius*FigureHeight;
         this->cent = cent;
         FigureHeight = BasicLine;
         Radius = R;
         PointNumber = number;
         diffAngle = 720/number;
         POINTS=createPoints();
-        for(int i = 0; i<POINTS.capacity(); i++)
-            POINTS[i].setShape(PointShape);
+        for(unsigned long long i = 0; i<POINTS.size()-3; i++)
+        POINTS[i].setShape(PointShape);
     }
+	double getS()
+	{
+		return S;
+	}
+	double getV()
+	{
+		return V;
+	}
 };
 ///-----------PYRAMID-CONE-----------------------------------------------------------
 class Pyramid_Cone
@@ -337,9 +365,11 @@ class Pyramid_Cone
 private:
     int PointNumber;
 
-    float diffAngle;
-    float FigureHeight;
-    float Radius;
+    double diffAngle;
+    double FigureHeight;
+    double Radius;
+
+	double S; double V;
 
     sf::Color FigureColor;
 
@@ -353,18 +383,18 @@ public:
     }
     std::vector<Point> createPoints()
     {
-        int ind = 0;
+
         Point S (cent.get_x(), cent.get_y(), cent.get_z()+FigureHeight/2, FigureColor);
         POINTS.push_back(S);
         Point antiS (cent.get_x(), cent.get_y(), cent.get_z()-FigureHeight/2, FigureColor);
         POINTS.push_back(antiS);
 
 
-        for(float i = 0; i<360; i+=diffAngle)
+        for(double i = 0; i<360; i+=diffAngle)
         {
-            float x = cent.get_x()+Radius*cos((i+45)*GTR);
-            float y = cent.get_y()+Radius*sin((i+45)*GTR);
-            float z = cent.get_z()-(FigureHeight/2);
+            double x = cent.get_x()+Radius*cos((i+45)*GTR);
+            double y = cent.get_y()+Radius*sin((i+45)*GTR);
+            double z = cent.get_z()-(FigureHeight/2);
             if(i<180)
             {
                 if(FigureColor.r<245)
@@ -422,9 +452,12 @@ public:
         return POINTS;
     }
 
-    Pyramid_Cone(float FigureHeight, float Radius, int PointNumber,
+    Pyramid_Cone(double FigureHeight, double Radius, int PointNumber,
                   Point cent, sf::Color FigureColor)
     {
+		double L = sqrt(pow(Radius, 2)+pow(FigureHeight, 2));
+		S = M_PI*Radius*(Radius+L);
+		V = (1.f/3.f)*M_PI*pow(Radius, 2)*FigureHeight;
         this->FigureHeight = FigureHeight;
         this->Radius = Radius;
         this->PointNumber = PointNumber;
@@ -435,26 +468,39 @@ public:
         Polygons = createPolygons();
     }
 
-    Pyramid_Cone(float BasicLine, float R, int number, Point cent, sf::CircleShape PointShape)
+    Pyramid_Cone(double BasicLine, double R, int number, Point cent, sf::CircleShape PointShape)
     {
+		double L = sqrt(pow(Radius, 2)+pow(FigureHeight, 2));
+		S = M_PI*Radius*(Radius+L);
+		V = (1.f/3.f)*M_PI*pow(Radius, 2)*FigureHeight;
         this->cent = cent;
         FigureHeight = BasicLine;
         Radius = R;
         PointNumber = number;
         diffAngle = 360/(number-1);
         POINTS=createPoints();
-        for(int i = 0; i<POINTS.capacity(); i++)
+        for(unsigned long long i = 0; i<POINTS.size(); i++)
             POINTS[i].setShape(PointShape);
     }
+	double getS()
+	{
+		return S;
+	}
+	double getV()
+	{
+		return V;
+	}
 };
 ///------SPHERE------------------------------------------------------
 class Sphere
 {
 private:
-    int PointNumber;
-    int PointPack;
-    float Radius;
-    float diffAngle;
+    unsigned long long PointNumber;
+    unsigned long long PointPack;
+    double Radius;
+    double diffAngle;
+
+	double S; double V;
 
     std::vector<Polygone> Polygons;
     std::vector<Point> POINTS;
@@ -469,21 +515,21 @@ public:
         Point Bottom (cent.get_x(), cent.get_y(), cent.get_z()-Radius, FigureColor);
         POINTS.push_back(Upper);
         Point temp;
-        for(int j =90-diffAngle; j>=-90+diffAngle; j-=diffAngle)
+        for(double j =90-diffAngle; j>=-90+diffAngle; j-=diffAngle)
         {
-            float z = cent.get_z()+Radius*sin(j*GTR);
-            float Radius_xy = Radius*cos(j*GTR);
-            for(float i = 0; i<360;i+=diffAngle)
+            double z = cent.get_z()+Radius*sin(j*GTR);
+            double Radius_xy = Radius*cos(j*GTR);
+            for(double i = 0; i<360;i+=diffAngle)
             {
 
-                float x = cent.get_x()+Radius_xy*cos(i*GTR);
-                float y = cent.get_y()+Radius_xy*sin(i*GTR);
+                double x = cent.get_x()+Radius_xy*cos(i*GTR);
+                double y = cent.get_y()+Radius_xy*sin(i*GTR);
 
                 temp = Point(x,y,z);
                 POINTS.push_back(temp);
             }
         }
-        for(int i = 0; i<POINTS.size(); i++)
+        for(unsigned long long i = 0; i<POINTS.size(); i++)
         {
                if(i%PointPack==0)
                 {
@@ -515,7 +561,7 @@ public:
     std::vector<Polygone> createPolygons()    //We push index of POINTS to use it via render-engine
     {
        std::cout<<PointPack<<std::endl;
-       for(int i = 1; i<=PointPack; i++)
+       for(unsigned long long i = 1; i<=PointPack; i++)
        {
            Polygone temp;
            if(i!=PointPack)
@@ -525,9 +571,9 @@ public:
             Polygons.push_back(temp);
        }
 
-       for(int k = 0;k<((PointNumber-2)/(PointPack))-1; k++)
+       for(unsigned long long k = 0;k<((PointNumber-2)/(PointPack))-1; k++)
        {
-           for(int i = k*PointPack+1; i<=k*PointPack+PointPack; i++)
+           for(unsigned long long i = k*PointPack+1; i<=k*PointPack+PointPack; i++)
            {
                Polygone temp_one;
                Polygone temp_two;
@@ -546,7 +592,7 @@ public:
            }
        }
 
-       for(int i = PointNumber-PointPack-1; i<=PointNumber-2; i++)
+       for(unsigned long long i = PointNumber-PointPack-1; i<=PointNumber-2; i++)
        {
            Polygone temp;
            if(i!=PointNumber-2)
@@ -568,20 +614,42 @@ public:
         return POINTS;
     }
 
-    Sphere (float Radius, float diffAngle, Point cent, sf::CircleShape PointShape,
-            sf::Color FigureColor)
-    {
-        this->Radius = Radius;
-        this->cent = cent;
-        this->diffAngle = diffAngle;
-        this->FigureColor = FigureColor;
-        PointPack = 360/diffAngle;
-        PointNumber = 2+((PointPack/2)-1)*PointPack;
-        POINTS=createPoints(cent);
-        for(int i = 0; i<POINTS.capacity(); i++)
-        POINTS[i].setShape(PointShape);
-        Polygons=createPolygons();
-    }
+    Sphere (double Radius, double diffAngle, Point cent,
+                sf::Color FigureColor)
+        {
+			S = 4*M_PI*pow(Radius, 2);
+			V = (4.f/3.f)*M_PI*pow(Radius, 3);
+            this->Radius = Radius;
+            this->cent = cent;
+            this->diffAngle = diffAngle;
+            this->FigureColor = FigureColor;
+            PointPack = 360/diffAngle;
+            PointNumber = 2+((PointPack/2)-1)*PointPack;
+            POINTS=createPoints(cent);
+            Polygons=createPolygons();
+        }
+        Sphere (double Radius, double diffAngle, Point cent, sf::CircleShape PointShape)
+        {
+			S = 4*M_PI*pow(Radius, 2);
+			V = (4.f/3.f)*M_PI*pow(Radius, 3);
+            this->Radius = Radius;
+            this->cent = cent;
+            this->diffAngle = diffAngle;
+            PointPack = 360/diffAngle;
+            PointNumber = 2+((PointPack/2)-1)*PointPack;
+            POINTS=createPoints(cent);
+            for(unsigned long long i = 0; i<POINTS.size(); i++)
+            POINTS[i].setShape(PointShape);
+            Polygons=createPolygons();
+        }
+		double getS()
+		{
+			return S;
+		}
+		double getV()
+		{
+			return V;
+		}
 };
 ///-----------PARALLELEPIPED---------------------------------------------------------
 
@@ -591,10 +659,12 @@ private:
     int PointNumber;
     int PointBound;
 
-    float diffAngle;
-    float FigureHeight;
-    float wight;
-    float flong;
+    double diffAngle;
+    double FigureHeight;
+    double width;
+    double flong;
+
+	double S; double V;
 
     sf::Color FigureColor;
 
@@ -605,11 +675,11 @@ public:
     std::vector<Point> POINTS;
     std::vector<Point> createPoints()
     {
-        for(float i = 0; i<360; i+=diffAngle)
+        for(double i = 0; i<360; i+=diffAngle)
         {
-            float x = cent.get_x()+wight*cos((i+45)*GTR);
-            float y = cent.get_y()+flong*sin((i+45)*GTR);
-            float z = cent.get_z()-(FigureHeight/2);
+            double x = cent.get_x()+width*cos((i+45)*GTR);
+            double y = cent.get_y()+flong*sin((i+45)*GTR);
+            double z = cent.get_z()-(FigureHeight/2);
 
             if(i>180)
             {
@@ -632,11 +702,11 @@ public:
             Point temp_neg (x,y,z, FigureColor);
             POINTS.push_back(temp_neg);
         }
-        for(float i = 0; i<360; i+=diffAngle)
+        for(double i = 0; i<360; i+=diffAngle)
         {
-            float x = cent.get_x()+wight*cos((i+45)*GTR);
-            float y = cent.get_y()+flong*sin((i+45)*GTR);
-            float z = cent.get_z()+(FigureHeight/2);
+            double x = cent.get_x()+width*cos((i+45)*GTR);
+            double y = cent.get_y()+flong*sin((i+45)*GTR);
+            double z = cent.get_z()+(FigureHeight/2);
 
             if(i>180)
             {
@@ -717,29 +787,35 @@ public:
         return POINTS;
     }
 
-    Parallelepiped(float BasicLine,float wight,float flong, Point cent, sf::Color FigureColor)
+    Parallelepiped(double BasicLine,double width,double flong, Point cent, sf::Color FigureColor)
     {
         this->FigureColor = FigureColor;
         this->cent = cent;
         FigureHeight = BasicLine;
-        this->wight = wight;
+        this->width = width;
         this->flong = flong;
         PointNumber = 8;
         PointBound = 4;
         diffAngle = 90;
         POINTS = createPoints();
         Polygons = createPolygons();
+		S = FigureHeight*width*2+FigureHeight*flong*2+flong*width*2;
+		V = FigureHeight*width*flong;
     }
-
-    Parallelepiped(float BasicLine,float wight,float flong, Point cent, sf::CircleShape PointShape)
+    Parallelepiped(double BasicLine,double width,double flong, Point cent, sf::CircleShape PointShape)
     {
         this->cent = cent;
+        FigureHeight = BasicLine;
+        this->width = width;
+        this->flong = flong;
         PointNumber = 8;
+        PointBound = 4;
         diffAngle = 90;
-        POINTS=createPoints();
-        Polygons = createPolygons();
-        for(int i = 0; i<POINTS.capacity(); i++)
-            POINTS[i].setShape(PointShape);
+        POINTS = createPoints();
+        for(unsigned long long i = 0; i<POINTS.size()-3; i++)
+        POINTS[i].setShape(PointShape);
+		S = FigureHeight*width*2+FigureHeight*flong*2+flong*width*2;
+		V = FigureHeight*width*flong;
     }
 
     int getPointBound()
@@ -750,4 +826,13 @@ public:
     {
         return PointNumber;
     }
+
+	double getS()
+	{
+		return S;
+	}
+	double getV()
+	{
+		return V;
+	}
 };
